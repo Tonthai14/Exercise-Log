@@ -1,9 +1,13 @@
 package com.example.logger.data.fieldoptions
 
-enum class ExerciseStructure {
-    SETS_AND_REPS,
-    SETS_AND_TIME,
-    REPS,
-    TIME,
-    ONE_REP_MAX
+enum class ExerciseStructure(val label: String) {
+    SETS_AND_REPS("SETS/REPS"),
+    SETS_AND_TIME("SETS/TIME"),
+    REPS("REPS"),
+    TIME("TIMED"),
+    ONE_REP_MAX("1 REP MAX");
+
+    override fun toString(): String {
+        return label;
+    }
 }

@@ -83,7 +83,7 @@ fun EntryDetailsScreen(
                 .fillMaxSize()
         ) {
             DetailRow(label = "Intensity", value = "Placeholder")
-            DetailRow(label = "Exercise Type", value = viewModel.exerciseType.toString())
+            DetailRow(label = "Exercise Type", value = viewModel.resistanceType.toString())
             DetailRow(label = "Weight Type", value = "Placeholder")
             DetailRow(label = "Weight", value = viewModel.weightAmount.toString())
             DetailRow(label = "Unit of Measurement", value = viewModel.weightUnitOfMeasurement.toString())

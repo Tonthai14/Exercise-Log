@@ -1,15 +1,12 @@
 package com.example.logger.editentry
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logger.AppViewModelProvider
 import com.example.logger.shared.viewmodels.EntryViewModel
-import com.example.logger.shared.components.EditableFieldsScreen
-import com.example.logger.shared.components.RowDisplay
+import com.example.logger.shared.components.ExerciseInstanceForm
 import kotlinx.coroutines.launch
 
 @Composable
@@ -23,19 +20,13 @@ fun EditEntryScreen(
         viewModel.loadExistingData(id)
     }
 
-    EditableFieldsScreen(
+    ExerciseInstanceForm(
         title = "Editing Entry",
-        extraContent = {
-            RowDisplay(content = {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        viewModel.updateEntry(id)
-                        onNavigateBack()
-                    }
-                }) {
-                    Text(text = "Save Changes")
-                }
-            })
+        onSaveInstance = {
+            coroutineScope.launch {
+                viewModel.updateEntry(id)
+                onNavigateBack()
+            }
         },
         viewModel = viewModel
     )

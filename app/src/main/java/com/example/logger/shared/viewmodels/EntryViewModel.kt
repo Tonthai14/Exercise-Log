@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.logger.data.EntryRepository
 import com.example.logger.data.ExerciseEntry
 import com.example.logger.data.fieldoptions.ExerciseStructure
-import com.example.logger.data.fieldoptions.ExerciseType
+import com.example.logger.data.fieldoptions.ResistanceType
 import com.example.logger.data.fieldoptions.WeightMeasurementStandard
 import kotlinx.coroutines.flow.first
 
@@ -20,10 +20,10 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         exerciseName = input
     }
 
-    var exerciseType by mutableStateOf(ExerciseType.WEIGHTS)
+    var resistanceType by mutableStateOf(ResistanceType.WEIGHTS)
         private set
     fun onExerciseTypeChange(input: String) {
-        exerciseType = ExerciseType.valueOf(input)
+        resistanceType = ResistanceType.valueOf(input)
     }
 
     private var _weightAmount = mutableStateOf<Float?>(null)
@@ -33,7 +33,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         _weightAmount.value = input
     }
 
-    var weightUnitOfMeasurement by mutableStateOf(WeightMeasurementStandard.POUNDS)
+    var weightUnitOfMeasurement by mutableStateOf(WeightMeasurementStandard.LBS)
         private set
     fun onWeightUnitOfMeasurementChange(input: String) {
         weightUnitOfMeasurement = WeightMeasurementStandard.valueOf(input)
@@ -65,7 +65,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
             id = 0,
             date = date!!,
             exerciseName = exerciseName,
-            exerciseType = exerciseType,
+            resistanceType = resistanceType,
             weightAmount = weightAmount,
             weightUnitOfMeasurement = weightUnitOfMeasurement,
             structure = exerciseStructure,
@@ -81,7 +81,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
             id = id,
             date = date!!,
             exerciseName = exerciseName,
-            exerciseType = exerciseType,
+            resistanceType = resistanceType,
             weightAmount = weightAmount,
             weightUnitOfMeasurement = weightUnitOfMeasurement,
             structure = exerciseStructure,
@@ -102,9 +102,9 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         entryStream.collect {
             date = it.date
             exerciseName = it.exerciseName
-            exerciseType = it.exerciseType
+            resistanceType = it.resistanceType
             _weightAmount.value = it.weightAmount
-            weightUnitOfMeasurement = it.weightUnitOfMeasurement ?: WeightMeasurementStandard.POUNDS
+            weightUnitOfMeasurement = it.weightUnitOfMeasurement ?: WeightMeasurementStandard.LBS
             exerciseStructure = it.structure
             _numberOfSets.value = it.sets
             _numberOfReps.value = it.reps
