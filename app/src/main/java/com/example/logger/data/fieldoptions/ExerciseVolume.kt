@@ -1,6 +1,6 @@
 package com.example.logger.data.fieldoptions
 
-enum class ExerciseStructure(val label: String) {
+enum class ExerciseVolume(val label: String) {
     SETS_AND_REPS("SETS/REPS"),
     SETS_AND_TIME("SETS/TIME"),
     REPS("REPS"),

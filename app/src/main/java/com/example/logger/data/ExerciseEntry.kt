@@ -2,7 +2,7 @@ package com.example.logger.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.logger.data.fieldoptions.ExerciseStructure
+import com.example.logger.data.fieldoptions.ExerciseVolume
 import com.example.logger.data.fieldoptions.ResistanceType
 import com.example.logger.data.fieldoptions.WeightMeasurementStandard
 import kotlin.time.Duration
@@ -15,7 +15,7 @@ data class ExerciseEntry(
     val resistanceType: ResistanceType,
     val weightAmount: Float?,
     val weightUnitOfMeasurement: WeightMeasurementStandard?,
-    val structure: ExerciseStructure,
+    val structure: ExerciseVolume,
     val sets: Int?,
     val reps: Int?,
     val elapsedTime: Duration?

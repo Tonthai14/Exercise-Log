@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.logger.data.EntryRepository
 import com.example.logger.data.ExerciseEntry
-import com.example.logger.data.fieldoptions.ExerciseStructure
+import com.example.logger.data.fieldoptions.ExerciseVolume
 import com.example.logger.data.fieldoptions.ResistanceType
 import com.example.logger.data.fieldoptions.WeightMeasurementStandard
 import kotlinx.coroutines.flow.first
@@ -39,10 +39,10 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         weightUnitOfMeasurement = WeightMeasurementStandard.valueOf(input)
     }
 
-    var exerciseStructure by mutableStateOf(ExerciseStructure.SETS_AND_REPS)
+    var exerciseVolume by mutableStateOf(ExerciseVolume.SETS_AND_REPS)
         private set
     fun onExerciseStructureChange(input: String) {
-        exerciseStructure = ExerciseStructure.valueOf(input)
+        exerciseVolume = ExerciseVolume.valueOf(input)
     }
 
     private var _numberOfSets = mutableStateOf<Int?>(null)
@@ -68,7 +68,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
             resistanceType = resistanceType,
             weightAmount = weightAmount,
             weightUnitOfMeasurement = weightUnitOfMeasurement,
-            structure = exerciseStructure,
+            structure = exerciseVolume,
             sets = numberOfSets,
             reps = numberOfReps,
             elapsedTime = null,
@@ -84,7 +84,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
             resistanceType = resistanceType,
             weightAmount = weightAmount,
             weightUnitOfMeasurement = weightUnitOfMeasurement,
-            structure = exerciseStructure,
+            structure = exerciseVolume,
             sets = numberOfSets,
             reps = numberOfReps,
             elapsedTime = null
@@ -105,7 +105,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
             resistanceType = it.resistanceType
             _weightAmount.value = it.weightAmount
             weightUnitOfMeasurement = it.weightUnitOfMeasurement ?: WeightMeasurementStandard.LBS
-            exerciseStructure = it.structure
+            exerciseVolume = it.structure
             _numberOfSets.value = it.sets
             _numberOfReps.value = it.reps
         }
