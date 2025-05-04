@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,14 +21,10 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,24 +36,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.logger.data.fieldoptions.ExerciseStructure
+import com.example.logger.data.fieldoptions.ExerciseVolume
 import com.example.logger.data.fieldoptions.ResistanceType
 import com.example.logger.data.fieldoptions.WeightMeasurementStandard
 import com.example.logger.font.cascadiaMonoFamily
 import com.example.logger.shared.viewmodels.EntryViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseInstanceForm(
     title: String,
     onSaveInstance: () -> Unit = {},
     viewModel: EntryViewModel = viewModel()
 ) {
+    val volumePagerState = rememberPagerState(pageCount = {ExerciseVolume.entries.size})
+    val resistancePagerState = rememberPagerState(pageCount = {ResistanceType.entries.size})
+
     Box(
         modifier = Modifier
             .background(color = Color.hsv(264F, 0.08F, 0.17F))
@@ -74,11 +74,11 @@ fun ExerciseInstanceForm(
             Column(modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(12.dp))
             ) {
-                ExerciseIntervalPicker()
-                ExerciseIntervalSection(viewModel)
+                ExerciseVolumePicker(pagerState = volumePagerState, viewModel = viewModel)
+                ExerciseVolumeSection(pagerState = volumePagerState, viewModel = viewModel)
                 HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(4.dp))
-                ResistanceTypePicker()
-                WeightSection(viewModel)
+                ResistanceTypePicker(pagerState = resistancePagerState, viewModel = viewModel)
+                ResistanceTypeSection(pagerState = resistancePagerState, viewModel = viewModel)
             }
             if (onSaveInstance !== {}) {
                 Button(
@@ -115,9 +115,8 @@ fun ExerciseNameSection(viewModel: EntryViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExerciseIntervalPicker() {
-    val types: List<String> = ExerciseStructure.entries.map { value -> value.toString() }
-    val pagerState = rememberPagerState(pageCount = {types.size})
+fun ExerciseVolumePicker(pagerState: PagerState, viewModel: EntryViewModel) {
+    val types: List<String> = ExerciseVolume.entries.map { value -> value.toString() }
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -134,8 +133,9 @@ fun ExerciseIntervalPicker() {
                 .align(Alignment.CenterVertically),
             state = pagerState,
         ) { index ->
+            viewModel.onExerciseVolumeChange(types[index])
             Text(
-                text = types[index],
+                text = viewModel.exerciseVolume!!.label,
                 textAlign = TextAlign.Center,
                 fontFamily = cascadiaMonoFamily,
                 modifier = Modifier.fillMaxWidth()
@@ -153,9 +153,100 @@ fun ExerciseIntervalPicker() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ResistanceTypePicker() {
+fun ExerciseVolumeSection(pagerState: PagerState, viewModel: EntryViewModel) {
+    Row {
+        val selection = ExerciseVolume.entries.toList()[pagerState.currentPage]
+        when (selection) {
+            ExerciseVolume.SETS_AND_REPS -> {
+                val plannedSetsConfig = EditableTextFieldConfig(
+                    label = "# Sets",
+                    value = if (viewModel.numberOfSets != null) viewModel.numberOfSets.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onNumberOfSetsChange(if (input.isEmpty()) null else input.toInt())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+                EditableTextField(config = plannedSetsConfig)
+
+                val plannedRepsConfig = EditableTextFieldConfig(
+                    label = "# Reps",
+                    value = if (viewModel.numberOfReps != null) viewModel.numberOfReps.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onNumberOfRepsChange(if (input.isEmpty()) null else input.toInt())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f)
+                )
+                EditableTextField(config = plannedRepsConfig)
+            }
+            ExerciseVolume.SETS_AND_TIME -> {
+                val plannedSetsConfig = EditableTextFieldConfig(
+                    label = "# Sets",
+                    value = if (viewModel.numberOfSets != null) viewModel.numberOfSets.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onNumberOfSetsChange(if (input.isEmpty()) null else input.toInt())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f),
+                )
+                EditableTextField(config = plannedSetsConfig)
+
+                val plannedTimeConfig = EditableTextFieldConfig(
+                    label = "Time",
+                    value = if (viewModel.duration != null) viewModel.duration.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onDurationChange(if (input.isEmpty()) null else input.toLong())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f)
+                )
+                EditableTextField(config = plannedTimeConfig)
+            }
+            ExerciseVolume.REPS -> {
+                val plannedRepsConfig = EditableTextFieldConfig(
+                    label = "# Reps",
+                    value = if (viewModel.numberOfReps != null) viewModel.numberOfReps.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onNumberOfRepsChange(if (input.isEmpty()) null else input.toInt())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f)
+                )
+                EditableTextField(config = plannedRepsConfig)
+            }
+            ExerciseVolume.TIME -> {
+                val plannedTimeConfig = EditableTextFieldConfig(
+                    label = "Time",
+                    value = if (viewModel.duration != null) viewModel.duration.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onDurationChange(if (input.isEmpty()) null else input.toLong())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f)
+                )
+                EditableTextField(config = plannedTimeConfig)
+            }
+            ExerciseVolume.ONE_REP_MAX -> {
+                val plannedRepsConfig = EditableTextFieldConfig(
+                    label = "1 Rep Max",
+                    value = if (viewModel.numberOfReps != null) viewModel.numberOfReps.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onNumberOfRepsChange(if (input.isEmpty()) null else input.toInt())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(1f)
+                )
+                EditableTextField(config = plannedRepsConfig)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ResistanceTypePicker(pagerState: PagerState, viewModel: EntryViewModel) {
     val types: List<String> = ResistanceType.entries.map { value -> value.toString() }
-    val pagerState = rememberPagerState(pageCount = {types.size})
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -172,8 +263,9 @@ fun ResistanceTypePicker() {
                 .align(Alignment.CenterVertically),
             state = pagerState,
         ) { index ->
+            viewModel.onResistanceTypeChange(types[index])
             Text(
-                text = types[index],
+                text = viewModel.resistanceType!!.label,
                 textAlign = TextAlign.Center,
                 fontFamily = cascadiaMonoFamily,
                 modifier = Modifier.fillMaxWidth()
@@ -190,78 +282,41 @@ fun ResistanceTypePicker() {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WeightSection(viewModel: EntryViewModel) {
+fun ResistanceTypeSection(pagerState: PagerState, viewModel: EntryViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Box(
-            modifier = Modifier.weight(0.75f)
-        ) {
-            val weightAmountConfig = EditableTextFieldConfig(
-                label = "Weight",
-                value = if (viewModel.weightAmount != null) viewModel.weightAmount.toString() else "",
-                onValueChanged = { input ->
-                    viewModel.onWeightAmountChange(if (input.isEmpty()) null else input.toFloat())
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
-            )
-            EditableTextField(config = weightAmountConfig)
-        }
-        Box(
-            modifier = Modifier.weight(0.25f)
-        ) {
-            val measurementUnits = WeightMeasurementStandard.entries.map { value -> value.toString() }
-            DropdownOptions(
-                selectableOptions = measurementUnits,
-                currentValue = viewModel.weightUnitOfMeasurement.toString(),
-                onValueChanged = viewModel::onWeightUnitOfMeasurementChange,
-            )
+        val selection = ResistanceType.entries.toList()[pagerState.currentPage]
+        if (selection == ResistanceType.WEIGHTS || selection == ResistanceType.BODY_WEIGHT) {
+            Box(
+                modifier = Modifier.weight(0.75f)
+            ) {
+                val weightAmountConfig = EditableTextFieldConfig(
+                    label = "Weight",
+                    value = if (viewModel.weightAmount != null) viewModel.weightAmount.toString() else "",
+                    onValueChanged = { input ->
+                        viewModel.onWeightAmountChange(if (input.isEmpty()) null else input.toFloat())
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                EditableTextField(config = weightAmountConfig)
+            }
+            Box(
+                modifier = Modifier.weight(0.25f)
+            ) {
+                val measurementUnits = WeightMeasurementStandard.entries.map { value -> value.toString() }
+                DropdownOptions(
+                    selectableOptions = measurementUnits,
+                    currentValue = viewModel.weightUnitOfMeasurement.toString(),
+                    onValueChanged = viewModel::onWeightUnitOfMeasurementChange,
+                )
+            }
         }
     }
-}
-
-@Composable
-fun ExerciseIntervalSection(viewModel: EntryViewModel) {
-    Row {
-        val plannedSetsConfig = EditableTextFieldConfig(
-            label = "# Sets",
-            value = if (viewModel.numberOfSets != null) viewModel.numberOfSets.toString() else "",
-            onValueChanged = { input ->
-                viewModel.onNumberOfSetsChange(if (input.isEmpty()) null else input.toInt())
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.weight(1f),
-        )
-        EditableTextField(config = plannedSetsConfig)
-
-        val plannedRepsConfig = EditableTextFieldConfig(
-            label = "# Reps",
-            value = if (viewModel.numberOfReps != null) viewModel.numberOfReps.toString() else "",
-            onValueChanged = { input ->
-                viewModel.onNumberOfRepsChange(if (input.isEmpty()) null else input.toInt())
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.weight(1f)
-        )
-        EditableTextField(config = plannedRepsConfig)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBarDisplay(title: String) {
-    TopAppBar(
-        title = {
-            Text(text = title, fontWeight = FontWeight.Bold)
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
-        )
-    )
 }
 
 @Composable

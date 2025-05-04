@@ -6,11 +6,13 @@ import androidx.compose.runtime.Composable
 fun DayRoute(
     date: String?,
     onNavigateToAddEntry: (date: String?) -> Unit,
-    onNavigateToEntry: (entryId: Long) -> Unit
+    onNavigateToEntry: (entryId: Long) -> Unit,
+    onNavigateToEdit: (entryId: Long) -> Unit
 ) {
     DayScreen(
         date = date,
         onNavigateToAddEntry = onNavigateToAddEntry,
-        onNavigateToEntry = onNavigateToEntry
+        onNavigateToEntry = onNavigateToEntry,
+        onNavigateToEdit = onNavigateToEdit
     )
 }

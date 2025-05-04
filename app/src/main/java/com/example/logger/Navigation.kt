@@ -48,6 +48,10 @@ fun ExerciseLogNavHost(
                 onNavigateToEntry = { id ->
                     navController.navigate(ENTRY_DETAILS_ROUTE
                         .replace(oldValue = "{id}", newValue = "$id"))
+                },
+                onNavigateToEdit = { id ->
+                    navController.navigate(EDIT_ENTRY_ROUTE
+                        .replace(oldValue = "{id}", newValue = "$id"))
                 }
             )
         }

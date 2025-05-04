@@ -8,6 +8,10 @@ enum class ExerciseVolume(val label: String) {
     ONE_REP_MAX("1 REP MAX");
 
     override fun toString(): String {
-        return label;
+        return label
+    }
+
+    companion object {
+        fun from(label: String): ExerciseVolume? = entries.find { it.label == label }
     }
 }
