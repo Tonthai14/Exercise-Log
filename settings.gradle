@@ -1,2 +1,2 @@
-rootProject.name='firstApp'
+rootProject.name='exercise-tracker'
 include ':app'

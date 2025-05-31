@@ -74,7 +74,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         val newEntry = ExerciseEntry(
             id = 0,
             date = date!!,
-            exerciseName = exerciseName,
+            exerciseName = exerciseName.trim(),
             volumeDetails = ExerciseVolumeDetails(
                 plan = exerciseVolume,
                 sets = numberOfSets,
@@ -94,7 +94,7 @@ class EntryViewModel(private val entryRepository: EntryRepository) : ViewModel()
         val editedEntry = ExerciseEntry(
             id = id,
             date = date!!,
-            exerciseName = exerciseName,
+            exerciseName = exerciseName.trim(),
             volumeDetails = ExerciseVolumeDetails(
                 plan = exerciseVolume,
                 sets = numberOfSets,
