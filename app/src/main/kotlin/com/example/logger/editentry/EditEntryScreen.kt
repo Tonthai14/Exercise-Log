@@ -28,6 +28,7 @@ fun EditEntryScreen(
                 onNavigateBack()
             }
         },
+        onNavigateBack = onNavigateBack,
         viewModel = viewModel
     )
 }

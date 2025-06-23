@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +33,7 @@ import com.example.logger.shared.viewmodels.EntryViewModel
 fun ExerciseDetailsCard(
     id: Long,
     onNavigateToEdit: (entryId: Long) -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: EntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     LaunchedEffect(Unit) {
@@ -40,6 +45,13 @@ fun ExerciseDetailsCard(
             .background(color = Color.hsv(264F, 0.08F, 0.17F))
             .fillMaxHeight()
     ) {
+        IconButton(onClick = onNavigateBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardReturn,
+                tint = Color.White,
+                contentDescription = "Navigate Back"
+            )
+        }
         Column(
             modifier = Modifier
                 .background(color = Color.hsv(269F, 0.05F, 0.35F))

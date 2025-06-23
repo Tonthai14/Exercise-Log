@@ -1,11 +1,11 @@
 package com.example.logger.shared.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -36,9 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logger.data.fieldoptions.ExerciseVolume
 import com.example.logger.data.fieldoptions.ResistanceType
@@ -47,25 +50,46 @@ import com.example.logger.font.cascadiaMonoFamily
 import com.example.logger.shared.viewmodels.EntryViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseInstanceForm(
     title: String,
     onSaveInstance: () -> Unit = {},
+    onNavigateBack: () -> Unit,
     viewModel: EntryViewModel = viewModel()
 ) {
     val volumePagerState = rememberPagerState(pageCount = {ExerciseVolume.entries.size})
     val resistancePagerState = rememberPagerState(pageCount = {ResistanceType.entries.size})
 
-    Box(
+    Column(
         modifier = Modifier
             .background(color = Color.hsv(264F, 0.08F, 0.17F))
             .fillMaxHeight()
     ) {
+        IconButton(onClick = onNavigateBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardReturn,
+                tint = Color.White,
+                contentDescription = "Navigate Back"
+            )
+        }
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .weight(0.2F)
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontFamily = cascadiaMonoFamily,
+                fontWeight = FontWeight.ExtraLight,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         Column(
             modifier = Modifier
                 .background(color = Color.hsv(269F, 0.05F, 0.35F))
-                .align(Alignment.Center)
                 .padding(8.dp)
                 .shadow(12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -90,6 +114,7 @@ fun ExerciseInstanceForm(
                 }
             }
         }
+        Spacer(modifier = Modifier.weight(0.2F))
     }
 }
 
@@ -113,7 +138,6 @@ fun ExerciseNameSection(viewModel: EntryViewModel) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseVolumePicker(pagerState: PagerState, viewModel: EntryViewModel) {
     val types: List<String> = ExerciseVolume.entries.map { value -> value.toString() }
@@ -151,7 +175,6 @@ fun ExerciseVolumePicker(pagerState: PagerState, viewModel: EntryViewModel) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseVolumeSection(pagerState: PagerState, viewModel: EntryViewModel) {
     Row {
@@ -243,7 +266,6 @@ fun ExerciseVolumeSection(pagerState: PagerState, viewModel: EntryViewModel) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResistanceTypePicker(pagerState: PagerState, viewModel: EntryViewModel) {
     val types: List<String> = ResistanceType.entries.map { value -> value.toString() }
@@ -281,8 +303,6 @@ fun ResistanceTypePicker(pagerState: PagerState, viewModel: EntryViewModel) {
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResistanceTypeSection(pagerState: PagerState, viewModel: EntryViewModel) {
     Row(

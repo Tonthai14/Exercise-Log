@@ -17,13 +17,14 @@ fun AddEntryScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     ExerciseInstanceForm(
-        title = "Add entry for $date",
+        title = "Adding Entry",
         onSaveInstance = {
             coroutineScope.launch {
                 viewModel.saveEntry(date)
                 onNavigateBack()
             }
         },
+        onNavigateBack = onNavigateBack,
         viewModel = viewModel
     )
 }

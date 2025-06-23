@@ -69,7 +69,8 @@ fun ExerciseLogNavHost(
                 onNavigateToEdit = { id ->
                     navController.navigate(EDIT_ENTRY_ROUTE
                         .replace(oldValue = "{id}", newValue = "$id"))
-                }
+                },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
         composable(EDIT_ENTRY_ROUTE) {
